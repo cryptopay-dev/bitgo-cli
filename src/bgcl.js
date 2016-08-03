@@ -431,7 +431,8 @@ BGCL.prototype.createArgumentParser = function() {
   consolidateUnspents.addArgument(['-f', '--feeRate'], { type: 'int', help: 'set fee rate in satoshis per KB'});
   consolidateUnspents.addArgument(['-c', '--confirmTarget'], { type: 'int', help: 'set fee based on estimates for getting confirmed within this number of blocks'});
   consolidateUnspents.addArgument(['-m', '--maxSize'], { help: 'maximum size unspent in BTC to consolidate'});
-
+  consolidateUnspents.addArgument(['-p', '--password'], {help: "the wallet password"});
+  
   // unspents fanout
   var fanoutUnspents = subparsers.addParser('fanout', {
     addHelp: true,
@@ -1420,6 +1421,7 @@ BGCL.prototype.handleConsolidateUnspents = function() {
   var target = this.args.target || 1;
   var maxInputCount = this.args.inputCount || undefined;
   var maxSize = (this.args.maxSize === '') ? 0.25 : parseFloat(this.args.maxSize);
+  var walletPassphrase = this.args.password;
   if (!this.session.wallet) {
     throw new Error('No current wallet.');
   }
@@ -1446,7 +1448,6 @@ BGCL.prototype.handleConsolidateUnspents = function() {
   };
 
   return this.ensureWallet()
-  .then(input.getVariable('password', 'Wallet password: '))
   .then(function() {
     params.walletPassphrase = input.password;
     return self.retryForUnlock({ duration: 3600 }, function(){
