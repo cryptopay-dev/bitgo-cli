@@ -1449,7 +1449,7 @@ BGCL.prototype.handleConsolidateUnspents = function() {
 
   return this.ensureWallet()
   .then(function() {
-    params.walletPassphrase = input.password;
+    params.walletPassphrase = walletPassphrase;
     return self.retryForUnlock({ duration: 3600 }, function(){
       return self.session.wallet.consolidateUnspents(params);
     });
